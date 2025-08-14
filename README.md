@@ -20,7 +20,7 @@ This project integrates an Intel RealSense depth camera with ABB Robot Studio to
 
 ### 1. ABB Robot Studio (RAPID)
 
-1. Load the RAPID program (`Module1`) onto your ABB robot or simulator.
+1. Load the RAPID program (`Module1_working1`) onto your ABB robot or simulator.
 2. Ensure the robot’s IP and port match the C++ program's configuration.
 3. Start the RAPID program and wait for a client connection.
 
