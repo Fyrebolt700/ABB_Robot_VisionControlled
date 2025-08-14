@@ -1,0 +1,55 @@
+MODULE Module1
+    CONST robtarget Home:=[[597.469,0,837.782],[0.001970865,-0.920377814,0.004639259,-0.390997791],[-1,-2,0,1],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Tar_1:=[[660.491,0,592.353],[0,0,1,0],[0,0,0,1],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    
+    VAR socketdev server;
+    VAR socketdev client;
+    VAR string message := "  ";
+    VAR rawbytes data;
+    
+    PROC main()
+        socket;
+    ENDPROC
+    
+    
+    PROC move()
+        MoveJ Home,v100,z10,tool0\WObj:=wobj0;
+        MoveL Tar_1,v100,z10,tool0\WObj:=wobj0;
+        MoveJ Home,v100,z10,tool0\WObj:=wobj0;
+    ENDPROC
+    
+    PROC socket()
+        !Create connection
+        SocketCreate server;
+        SocketBind server, "127.0.0.1",55000;
+        SocketListen server;
+        TPWrite "Waiting for client connection";
+        
+        !accept client
+        SocketAccept server,client;
+        TPWrite "Client Connecteed";
+        
+        
+        !loop until GO is recieved
+        WHILE TRUE DO
+            !recieve data'
+            SocketReceive client, \RawData:=data;
+            UnpackRawBytes data, 1, message \ISOLatin1Encoding:=2;
+            TPWrite "Message from client: " + message;
+            
+            !only move if message matches GO
+            IF message = "GO" THEN
+                TPWrite "trigger recieved";
+                move;
+                !exit loop
+                EXIT;
+            ENDIF
+        ENDWHILE
+        
+        !Close sockets
+        SocketClose client;
+        SocketClose server;
+        TPWrite "Client closed";
+        
+    ENDPROC   
+ENDMODULE
